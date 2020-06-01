@@ -12,7 +12,8 @@ public class Scoreboard {
     public void addScore(Karakter karakter){
         for (Karakter k : highscores){
             if(karakter.getScore() > k.getScore()){
-                highscores.add(karakter);
+                int position = highscores.indexOf(k);
+                highscores.add(position, karakter);
                 highscores.remove(10);
                 return;
             }
