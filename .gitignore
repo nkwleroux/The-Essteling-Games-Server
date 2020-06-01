@@ -91,3 +91,11 @@ fabric.properties
 .idea/**/markdown-navigator/
 
 # End of https://www.gitignore.io/api/intellij
+
+.idea/misc.xml
+
+.idea/modules.xml
+
+.idea/The-Essteling-Games-Server.iml
+
+.idea/vcs.xml
