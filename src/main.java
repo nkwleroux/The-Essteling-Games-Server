@@ -8,12 +8,14 @@ public class main {
 
     public static void main(String[] args) {
 
-        User user = new User();
-        String topic = "TheEsstelingGames/JavaServerTest";
-        String content = "Message from Nicholas";
-        int qos = 2;
-        String clientId = "The Essteling games Nicholas";
-        String will = "Nicholas has left";
+        User user = new User("Nicholas");
+        user.setContent("Message from test");
+        final int qos = 2;
+        final String topic = "TheEsstelingGames/JavaServerTest";
+
+        String clientId = user.getClientId();
+        String content = user.getContent();
+        String will = user.getWill();
 
         String userName = user.getUserName();
         char[] password = user.getPassword();
@@ -40,9 +42,9 @@ public class main {
             sampleClient.publish(topic, messageMQTT);
             System.out.println("Message published");
 
-            sampleClient.disconnect();
-            System.out.println("Disconnected");
-            System.exit(0);
+//            sampleClient.disconnect();
+//            System.out.println("Disconnected");
+//            System.exit(0);
         } catch (MqttException me) {
             System.out.println("reason " + me.getReasonCode());
             System.out.println("msg " + me.getMessage());
