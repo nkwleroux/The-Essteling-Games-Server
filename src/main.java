@@ -8,31 +8,36 @@ public class main {
 
     public static void main(String[] args) {
 
+        User user = new User();
         String topic = "TheEsstelingGames/JavaServerTest";
         String content = "Message from Nicholas";
         int qos = 2;
-        String broker = "tcp://maxwell.bps-software.nl:1883";
         String clientId = "The Essteling games Nicholas";
         String will = "Nicholas has left";
+
+        String userName = user.getUserName();
+        char[] password = user.getPassword();
+        String url = user.getUrl();
+        //Might not be needed everywhere. Only at the start of the connection.
         MemoryPersistence persistence = new MemoryPersistence();
 
         try {
-            MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
+            MqttClient sampleClient = new MqttClient(url, clientId, persistence);
 
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
-            connOpts.setUserName("androidTI");
-            connOpts.setPassword("&FN+g$$Qhm7j".toCharArray());
+            connOpts.setUserName(userName);
+            connOpts.setPassword(password);
             connOpts.setWill(topic,will.getBytes(),2,false);
 
-            System.out.println("Connecting to broker: " + broker);
+            System.out.println("Connecting to broker: " + url);
             sampleClient.connect(connOpts);
 
             System.out.println("Connected");
             System.out.println("Publishing message: " + content);
-            MqttMessage message = new MqttMessage(content.getBytes());
-            message.setQos(qos);
-            sampleClient.publish(topic, message);
+            MqttMessage messageMQTT = new MqttMessage(content.getBytes());
+            messageMQTT.setQos(qos);
+            sampleClient.publish(topic, messageMQTT);
             System.out.println("Message published");
 
             sampleClient.disconnect();
