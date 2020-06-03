@@ -3,9 +3,10 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Server implements MqttCallback {
 
@@ -126,6 +127,20 @@ public class Server implements MqttCallback {
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         System.out.println("Message from server: " + mqttMessage);
+        JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())));
+
+        JsonObject jsonObject = jsonReader.readObject();
+
+        int id = jsonObject.getInt("id");
+
+        String character = jsonObject.getString("character");
+
+        String assignment = jsonObject.getString("assignment");
+
+        int score = jsonObject.getInt("score");
+
+
+        jsonReader.close();
     }
 
     @Override
