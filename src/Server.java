@@ -132,17 +132,19 @@ public class Server implements MqttCallback {
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         System.out.println("Message from server: " + mqttMessage);
-        JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())));
+        try ( JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())))){
+            JsonObject jsonObject = jsonReader.readObject();
 
-        JsonObject jsonObject = jsonReader.readObject();
+            int id = jsonObject.getInt("id");
+            String character = jsonObject.getString("character");
+            int score = jsonObject.getInt("score");
 
-        int id = jsonObject.getInt("id");
-        String character = jsonObject.getString("character");
-        int score = jsonObject.getInt("score");
+            System.out.println("received player id:" + id + " name :"  + character + " score:" + score);
 
-        this.scoreBoardCallback.onNewScore(new Player(id,character,score));
-
-        jsonReader.close();
+            this.scoreBoardCallback.onNewScore(new Player(id,character,score));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
