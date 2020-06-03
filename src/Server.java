@@ -31,7 +31,7 @@ public class Server implements MqttCallback {
     }
 
     public Server() {
-       testList = testData();
+        testList = testData();
 
         user = new User("NewN");
         user.setContents(testList);
@@ -44,7 +44,7 @@ public class Server implements MqttCallback {
         url = user.getUrl();
     }
 
-    public ArrayList<String> testData(){
+    public ArrayList<String> testData() {
         ArrayList<String> testList = new ArrayList<>();
 
         testList.add("Nic");
@@ -138,6 +138,7 @@ public class Server implements MqttCallback {
         String assignment = jsonObject.getString("assignment");
 
         int score = jsonObject.getInt("score");
+
 
 
         jsonReader.close();

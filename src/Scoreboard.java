@@ -13,7 +13,7 @@ public class Scoreboard {
 
     public void updateScoreBoard(Player player) {
         for (Player k : highscores) {
-            if (player.getScore() > k.getScore()) {
+            if (player.getTotalScore() > k.getTotalScore()) {
                 int position = highscores.indexOf(k);
                 highscores.add(position, player);
                 highscores.remove(10);
@@ -24,7 +24,7 @@ public class Scoreboard {
 
     public void initScoreBoard() {
         for (int i = 10; i > 0; i--) {
-            addHighscore(new Player("player " + i, 0));
+            addHighscore(new Player(i, "player"));
         }
     }
 
@@ -40,9 +40,7 @@ public class Scoreboard {
         Scoreboard s = new Scoreboard();
         Random random = new Random();
 
-        for (int i = 5; i > 0; i--) {
-            s.updateScoreBoard(new Player("test " + i, Math.abs(random.nextInt(500)) * 10));
-        }
+
         System.out.println(s.getHighscores().toString());
     }
 }
