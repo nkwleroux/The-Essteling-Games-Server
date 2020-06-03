@@ -50,6 +50,7 @@ public class Server implements MqttCallback {
         return testList;
     }
 
+    //sends message to server and sets
     public void demo() {
         try {
             MqttClient client = new MqttClient(url, clientId, persistence);
