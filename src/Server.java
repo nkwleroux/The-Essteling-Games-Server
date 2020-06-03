@@ -3,9 +3,10 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Server implements MqttCallback {
 
@@ -25,12 +26,15 @@ public class Server implements MqttCallback {
 
     MemoryPersistence persistence = new MemoryPersistence();
 
+    ScoreBoardCallback scoreBoardCallback;
+
     public static void main(String[] args) {
-        new Server().demo();
+        Scoreboard scoreboard = new Scoreboard();
+        new Server(scoreboard).demo();
     }
 
-    public Server() {
-       testList = testData();
+    public Server(ScoreBoardCallback scoreBoardCallback) {
+        testList = testData();
 
         user = new User("NewN");
         user.setContents(testList);
@@ -41,9 +45,11 @@ public class Server implements MqttCallback {
         userName = user.getUserName();
         password = user.getPassword();
         url = user.getUrl();
+
+        this.scoreBoardCallback = scoreBoardCallback;
     }
 
-    public ArrayList<String> testData(){
+    public ArrayList<String> testData() {
         ArrayList<String> testList = new ArrayList<>();
 
         testList.add("Nic");
@@ -126,6 +132,17 @@ public class Server implements MqttCallback {
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         System.out.println("Message from server: " + mqttMessage);
+        JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())));
+
+        JsonObject jsonObject = jsonReader.readObject();
+
+        int id = jsonObject.getInt("id");
+        String character = jsonObject.getString("character");
+        int score = jsonObject.getInt("score");
+
+        this.scoreBoardCallback.onNewScore(new Player(id,character,score));
+
+        jsonReader.close();
     }
 
     @Override
