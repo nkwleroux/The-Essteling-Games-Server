@@ -9,7 +9,7 @@ public class main {
     public static void main(String[] args) {
 
         User user = new User("Nicholas");
-        user.setContent("Message from test");
+        user.setContent("Message from nic pc");
         final int qos = 2;
         final String topic = "TheEsstelingGames/JavaServerTest";
 
