@@ -13,6 +13,7 @@ public class Server {
     private final char[] password = "&FN+g$$Qhm7j".toCharArray();
 
     private final String topic = "A1/TheEsstelingGames/Scoreboard";
+    private final String subscribeTopic = "A1/TheEsstelingGames/AssingmentScores";
     private final String clientId = "Server";
     private final String will = clientId + " has disconnected";
     private final int qos = 2;
@@ -80,7 +81,7 @@ public class Server {
                         public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
                         }
                     });
-                    client.subscribe(topic);
+                    client.subscribe(subscribeTopic);
 
                     //sends a single string to the server.
 //                    MqttMessage message = messageToServer(content);
