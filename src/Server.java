@@ -8,7 +8,7 @@ import javax.json.JsonReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-public class Server {
+public class Server implements MqttCallback{
 
     private final String url = "tcp://maxwell.bps-software.nl:1883";
     private final String userName = "androidTI";
@@ -144,5 +144,31 @@ public class Server {
 //        return testList;
 //    }
 
+    @Override
+    public void connectionLost(Throwable throwable) {
+        System.out.println("connection lost");
+    }
 
+    @Override
+    public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+        System.out.println("Message from server: " + mqttMessage);
+        try (JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())))) {
+            JsonObject jsonObject = jsonReader.readObject();
+
+            int id = jsonObject.getInt("id");
+            String character = jsonObject.getString("character");
+            int score = jsonObject.getInt("score");
+
+            System.out.println("received player id:" + id + " name :" + character + " score:" + score);
+
+            this.scoreBoardCallback.onNewScore(new Player(id, character, score));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+        System.out.println("Sent from server to MQTT: ");
+    }
 }
