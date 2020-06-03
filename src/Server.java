@@ -54,7 +54,6 @@ public class Server {
                             if (mqttMessage.toString().equals("close server")) {
                                 client.disconnect();
                                 client.close();
-                                System.exit(0);
                             } else {
                                 try (JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())));) {
 
@@ -67,7 +66,7 @@ public class Server {
                                     scoreBoardCallback.onNewScore(new Player(id, character, score));
 
                                 }catch (Exception e){
-                                    e.printStackTrace();
+                                    System.out.println("received improper json: " + mqttMessage.toString());
                                 }
                             }
                         }
