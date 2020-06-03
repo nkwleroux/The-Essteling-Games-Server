@@ -10,6 +10,6 @@
     <orderEntry type="library" name="client.mqttv3-1.2.4" level="project" />
     <orderEntry type="library" name="org.eclipse.paho.client.mqttv3-1.2.4" level="project" />
     <orderEntry type="library" name="javax.json-api-1.1.4" level="project" />
-    <orderEntry type="library" name="javax.json-api-1.1.4" level="project" />
+    <orderEntry type="library" name="json-simple-1.1.1" level="project" />
   </component>
 </module>

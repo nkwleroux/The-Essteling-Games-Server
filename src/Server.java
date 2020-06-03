@@ -1,12 +1,10 @@
-import jdk.nashorn.internal.parser.JSONParser;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.io.StringWriter;
 
 public class Server {
 
@@ -50,23 +48,29 @@ public class Server {
 
                         @Override
                         public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-                            System.out.println("Message from server: " + mqttMessage);
                             if (mqttMessage.toString().equals("close server")) {
+                                System.out.println("received message to close server");
                                 client.disconnect();
                                 client.close();
+
                             } else {
-                                try (JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())));) {
+                                try {
+                                    JSONParser jsonParser = new JSONParser();
+                                    JSONObject jsonObject = (JSONObject) jsonParser.parse(new StringReader(mqttMessage.toString()));
 
-                                    JsonObject jsonObject = jsonReader.readObject();
+                                    int id = (int) (long) jsonObject.get("id");
+                                    String character = (String) jsonObject.get("character");
+                                    int score = (int) (long) jsonObject.get("score");
 
-                                    int id = jsonObject.getInt("id");
-                                    String character = jsonObject.getString("character");
-                                    int score = jsonObject.getInt("score");
+                                    System.out.println("received new player id:" + id + " name:" + character + " score:" + score);
 
                                     scoreBoardCallback.onNewScore(new Player(id, character, score));
 
-                                }catch (Exception e){
-                                    System.out.println("received improper json: " + mqttMessage.toString());
+                                } catch (ClassCastException e) {
+                                    System.out.println("received improper json\n" + mqttMessage.toString());
+                                    e.printStackTrace();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
                         }
