@@ -2,7 +2,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class Scoreboard {
+public class Scoreboard implements ScoreBoardCallback{
 
     private final List<Player> highscores;
 
@@ -13,7 +13,7 @@ public class Scoreboard {
 
     public void updateScoreBoard(Player player) {
         for (Player k : highscores) {
-            if (player.getTotalScore() > k.getTotalScore()) {
+            if (player.getScore() > k.getScore()) {
                 int position = highscores.indexOf(k);
                 highscores.add(position, player);
                 highscores.remove(10);
@@ -24,7 +24,7 @@ public class Scoreboard {
 
     public void initScoreBoard() {
         for (int i = 10; i > 0; i--) {
-            addHighscore(new Player(i, "player"));
+            addHighscore(new Player(i, "player", 0));
         }
     }
 
@@ -42,5 +42,10 @@ public class Scoreboard {
 
 
         System.out.println(s.getHighscores().toString());
+    }
+
+    @Override
+    public void onNewScore(Player player) {
+
     }
 }

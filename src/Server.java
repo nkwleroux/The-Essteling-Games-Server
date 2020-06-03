@@ -26,11 +26,14 @@ public class Server implements MqttCallback {
 
     MemoryPersistence persistence = new MemoryPersistence();
 
+    ScoreBoardCallback scoreBoardCallback;
+
     public static void main(String[] args) {
-        new Server().demo();
+        Scoreboard scoreboard = new Scoreboard();
+        new Server(scoreboard).demo();
     }
 
-    public Server() {
+    public Server(ScoreBoardCallback scoreBoardCallback) {
         testList = testData();
 
         user = new User("NewN");
@@ -42,6 +45,8 @@ public class Server implements MqttCallback {
         userName = user.getUserName();
         password = user.getPassword();
         url = user.getUrl();
+
+        this.scoreBoardCallback = scoreBoardCallback;
     }
 
     public ArrayList<String> testData() {
@@ -132,14 +137,10 @@ public class Server implements MqttCallback {
         JsonObject jsonObject = jsonReader.readObject();
 
         int id = jsonObject.getInt("id");
-
         String character = jsonObject.getString("character");
-
-        String assignment = jsonObject.getString("assignment");
-
         int score = jsonObject.getInt("score");
 
-
+        this.scoreBoardCallback.onNewScore(new Player(id,character,score));
 
         jsonReader.close();
     }
