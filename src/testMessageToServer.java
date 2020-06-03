@@ -4,22 +4,21 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-public class main {
+public class testMessageToServer {
 
     public static void main(String[] args) {
 
-        User user = new User("Nicholas");
-        user.setContent("Message from nic pc");
         final int qos = 2;
-        final String topic = "TheEsstelingGames/JavaServerTest";
+        final String topic = "A1/TheEsstelingGames/Scoreboard";
 
-        String clientId = user.getClientId();
-        String content = user.getContent();
-        String will = user.getWill();
+        final String userName = "androidTI";
+        final char[] password = "&FN+g$$Qhm7j".toCharArray();
+        final String url = "tcp://maxwell.bps-software.nl:1883";
 
-        String userName = user.getUserName();
-        char[] password = user.getPassword();
-        String url = user.getUrl();
+        String clientId = "Nicholas";
+        String content = "test message";
+        String will = clientId + " has left";
+
         //Might not be needed everywhere. Only at the start of the connection.
         MemoryPersistence persistence = new MemoryPersistence();
 
@@ -42,9 +41,8 @@ public class main {
             sampleClient.publish(topic, messageMQTT);
             System.out.println("Message published");
 
-//            sampleClient.disconnect();
-//            System.out.println("Disconnected");
-//            System.exit(0);
+            sampleClient.disconnect();
+            System.exit(0);
         } catch (MqttException me) {
             System.out.println("reason " + me.getReasonCode());
             System.out.println("msg " + me.getMessage());
