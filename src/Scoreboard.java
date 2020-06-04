@@ -1,32 +1,45 @@
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class Scoreboard implements ScoreBoardCallback{
+public class Scoreboard implements ScoreBoardCallback {
 
     private final List<Player> highscores;
 
     public Scoreboard() {
         this.highscores = new LinkedList<>();
-        initScoreBoard();
     }
 
     public void updateScoreBoard(Player player) {
-        for (Player k : highscores) {
-            if (player.getScore() > k.getScore()) {
-                int position = highscores.indexOf(k);
-                highscores.add(position, player);
-                highscores.remove(10);
-                return;
+//        if (highscores.size() < 10) {
+            if (highscores.size() == 0) {
+                addHighscore(player);
+//            }else {
+//                for (Player k : highscores) {
+//                    if (!player.getUsername().equals(player.getUsername()))
+//                        addHighscore(player);
+//                }
+//            }
+        } else {
+            for (Player k : highscores) {
+                if (!player.getUsername().equals(k.getUsername())) {
+                    int position = highscores.indexOf(k);
+                    highscores.add(position, player);
+                    highscores.remove(10);
+                    return;
+                } else if (player.getUsername().equals(k.getUsername()) && player.getScore() >= k.getScore()) {
+                    int position = highscores.indexOf(k);
+                    highscores.remove(position);
+                    highscores.add(position, player);
+                    return;
+                }
             }
         }
+
     }
 
-    public void initScoreBoard() {
-        for (int i = 10; i > 0; i--) {
-            addHighscore(new Player(i, "player", 0));
-        }
-    }
+
 
     public void addHighscore(Player player) {
         this.highscores.add(player);
@@ -40,16 +53,9 @@ public class Scoreboard implements ScoreBoardCallback{
         return highscores.get(id);
     }
 
-    public static void main(String[] args) {
-        Scoreboard s = new Scoreboard();
-        Random random = new Random();
-
-
-        System.out.println(s.getHighscores().toString());
-    }
-
     @Override
     public void onNewScore(Player player) {
         updateScoreBoard(player);
+        Collections.sort(highscores);
     }
 }

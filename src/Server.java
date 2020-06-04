@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.StringReader;
+import java.util.HashMap;
 
 public class Server {
 
@@ -16,7 +17,9 @@ public class Server {
     private final String clientId = "Server";
     private final String will = clientId + " has disconnected";
     private final int qos = 2;
-    MemoryPersistence memoryPersistence = new MemoryPersistence();
+    private final MemoryPersistence memoryPersistence = new MemoryPersistence();
+
+    private HashMap<String, Player> playerHashMap;
 
     //    ScoreBoardCallback scoreBoardCallback;
     Scoreboard scoreboard;
@@ -29,6 +32,7 @@ public class Server {
 
     public Server(Scoreboard scoreboard) {
         this.scoreboard = scoreboard;
+        playerHashMap = new HashMap<>();
 //        this.scoreBoardCallback = scoreBoardCallback;
     }
 
@@ -58,19 +62,39 @@ public class Server {
                                 client.close();
                                 System.exit(0);
                             } else if (message.equals("get Scoreboard")) {
-                                client.publish(publishTopic, messageToServer(scoreboard.getHighscore(0).toString()));
+                                for (int i = 0; i < scoreboard.getHighscores().size(); i++) {
+
+                                    client.publish(publishTopic, messageToServer(scoreboard.getHighscore(i).toStringSimplified()));
+                                }
+//                                for (Player player : scoreboard.getHighscores()) {
+//                                }
+
                             } else {
-                                try{
+                                try {
                                     JSONParser jsonParser = new JSONParser();
                                     JSONObject jsonObject = (JSONObject) jsonParser.parse(new StringReader(mqttMessage.toString()));
                                     int id = (int) (long) jsonObject.get("id");
                                     String character = (String) jsonObject.get("character");
                                     int score = (int) (long) jsonObject.get("score");
+                                    String objectUsername = character + id;
 
                                     System.out.println("received new player id:" + id + " name:" + character + " score:" + score);
 
-                                    scoreboard.onNewScore(new Player(id, character, score));
-//                                    scoreBoardCallback.onNewScore(new Player(id, character, score));
+                                    Player newPlayer = new Player(id, character, score);
+                                    if (!playerHashMap.containsKey(objectUsername) || playerHashMap.get(objectUsername).getScore() <= newPlayer.getScore()) {
+                                        scoreboard.onNewScore(newPlayer);
+
+                                        playerHashMap.put(newPlayer.getUsername(), newPlayer);
+
+                                    } else {
+                                        for (Player player : scoreboard.getHighscores()) {
+                                            if (player.equals(playerHashMap.get(objectUsername))) {
+                                                scoreboard.updateScoreBoard(newPlayer);
+                                            }
+                                        }
+                                    }
+                                    System.out.println(scoreboard.getHighscores());
+                                    System.out.println(playerHashMap);
 
                                 } catch (ClassCastException e) {
                                     System.out.println("received improper json\n" + mqttMessage.toString());
