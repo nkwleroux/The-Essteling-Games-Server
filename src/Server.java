@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 
 public class Server {
 
@@ -12,23 +11,25 @@ public class Server {
     private final String userName = "androidTI";
     private final char[] password = "&FN+g$$Qhm7j".toCharArray();
 
-    private final String topic = "A1/TheEsstelingGames/Scoreboard";
-    private final String subscribeTopic = "A1/TheEsstelingGames/AssingmentScores";
+    private final String topic = "A1/TheEsstelingGames/AndroidData";
+    private final String publishTopic = "A1/TheEsstelingGames/Scoreboard";
     private final String clientId = "Server";
     private final String will = clientId + " has disconnected";
     private final int qos = 2;
     MemoryPersistence memoryPersistence = new MemoryPersistence();
 
-    ScoreBoardCallback scoreBoardCallback;
+    //    ScoreBoardCallback scoreBoardCallback;
+    Scoreboard scoreboard;
 
     public static void main(String[] args) {
         Scoreboard scoreboard = new Scoreboard();
+
         new Server(scoreboard).start();
     }
 
-    public Server(ScoreBoardCallback scoreBoardCallback) {
-
-        this.scoreBoardCallback = scoreBoardCallback;
+    public Server(Scoreboard scoreboard) {
+        this.scoreboard = scoreboard;
+//        this.scoreBoardCallback = scoreBoardCallback;
     }
 
     public void start() {
@@ -49,39 +50,42 @@ public class Server {
 
                         @Override
                         public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-                            if (mqttMessage.toString().equals("close server")) {
+                            System.out.println("Message from server: " + mqttMessage);
+                            String message = mqttMessage.toString();
+                            if (message.equals("close server")) {
                                 System.out.println("received message to close server");
                                 client.disconnect();
                                 client.close();
-
+                                System.exit(0);
+                            } else if (message.equals("get Scoreboard")) {
+                                client.publish(publishTopic, messageToServer(scoreboard.getHighscore(0).toString()));
                             } else {
-                                try {
+                                try{
                                     JSONParser jsonParser = new JSONParser();
                                     JSONObject jsonObject = (JSONObject) jsonParser.parse(new StringReader(mqttMessage.toString()));
-
                                     int id = (int) (long) jsonObject.get("id");
                                     String character = (String) jsonObject.get("character");
                                     int score = (int) (long) jsonObject.get("score");
 
                                     System.out.println("received new player id:" + id + " name:" + character + " score:" + score);
 
-                                    scoreBoardCallback.onNewScore(new Player(id, character, score));
+                                    scoreboard.onNewScore(new Player(id, character, score));
+//                                    scoreBoardCallback.onNewScore(new Player(id, character, score));
 
                                 } catch (ClassCastException e) {
                                     System.out.println("received improper json\n" + mqttMessage.toString());
                                     e.printStackTrace();
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+//                                    e.printStackTrace();
                                 }
                             }
                         }
-
 
                         @Override
                         public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
                         }
                     });
-                    client.subscribe(subscribeTopic);
+                    client.subscribe(topic);
 
                     //sends a single string to the server.
 //                    MqttMessage message = messageToServer(content);

@@ -13,7 +13,7 @@ public class Player implements Comparable<Player>{
     }
 
     public String getUsername(){
-        return this.name + ' ' + id;
+        return this.name + id;
     }
 
     public int getScore() {
@@ -23,5 +23,10 @@ public class Player implements Comparable<Player>{
     @Override
     public int compareTo(Player o) {
         return this.score - o.score;
+    }
+
+    @Override
+    public String toString() {
+        return getUsername() + ", " + score;
     }
 }

@@ -9,7 +9,8 @@ public class testMessageToServer {
     public static void main(String[] args) {
 
         final int qos = 2;
-        final String topic = "A1/TheEsstelingGames/Scoreboard";
+//        final String topic = "A1/TheEsstelingGames/Scoreboard";
+        final String topic = "A1/TheEsstelingGames/AndroidData";
 
         final String userName = "androidTI";
         final char[] password = "&FN+g$$Qhm7j".toCharArray();

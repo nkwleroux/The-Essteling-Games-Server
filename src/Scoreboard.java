@@ -36,6 +36,10 @@ public class Scoreboard implements ScoreBoardCallback{
         return highscores;
     }
 
+    public Player getHighscore(int id) {
+        return highscores.get(id);
+    }
+
     public static void main(String[] args) {
         Scoreboard s = new Scoreboard();
         Random random = new Random();
@@ -46,6 +50,6 @@ public class Scoreboard implements ScoreBoardCallback{
 
     @Override
     public void onNewScore(Player player) {
-
+        updateScoreBoard(player);
     }
 }
