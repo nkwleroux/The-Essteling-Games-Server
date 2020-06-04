@@ -1,4 +1,3 @@
-import jdk.nashorn.internal.parser.JSONParser;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -6,7 +5,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.StringReader;
-import java.util.ArrayList;
 
 public class Server {
 
@@ -14,22 +12,24 @@ public class Server {
     private final String userName = "androidTI";
     private final char[] password = "&FN+g$$Qhm7j".toCharArray();
 
-    private final String topic = "A1/TheEsstelingGames/Scoreboard";
+    private final String topic = "A1/TheEsstelingGames/AndroidData";
     private final String clientId = "Server";
     private final String will = clientId + " has disconnected";
     private final int qos = 2;
     MemoryPersistence memoryPersistence = new MemoryPersistence();
 
-    ScoreBoardCallback scoreBoardCallback;
+    //    ScoreBoardCallback scoreBoardCallback;
+    Scoreboard scoreboard;
 
     public static void main(String[] args) {
         Scoreboard scoreboard = new Scoreboard();
+
         new Server(scoreboard).start();
     }
 
-    public Server(ScoreBoardCallback scoreBoardCallback) {
-
-        this.scoreBoardCallback = scoreBoardCallback;
+    public Server(Scoreboard scoreboard) {
+        this.scoreboard = scoreboard;
+//        this.scoreBoardCallback = scoreBoardCallback;
     }
 
     public void start() {
@@ -51,12 +51,15 @@ public class Server {
                         @Override
                         public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
                             System.out.println("Message from server: " + mqttMessage);
-                            if (mqttMessage.toString().equals("close server")) {
+                            String message = mqttMessage.toString();
+                            if (message.equals("close server")) {
                                 client.disconnect();
                                 client.close();
                                 System.exit(0);
+                            } else if (message.equals("get Scoreboard")) {
+                                client.publish("A1/TheEsstelingGames/Scoreboard", messageToServer(scoreboard.getHighscore(0).toString()));
                             } else {
-                                try (JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())));) {
+                                try (JsonReader jsonReader = Json.createReader(new StringReader(new String(mqttMessage.getPayload())))) {
 
                                     JsonObject jsonObject = jsonReader.readObject();
 
@@ -64,10 +67,11 @@ public class Server {
                                     String character = jsonObject.getString("character");
                                     int score = jsonObject.getInt("score");
 
-                                    scoreBoardCallback.onNewScore(new Player(id, character, score));
+                                    scoreboard.onNewScore(new Player(id, character, score));
+//                                    scoreBoardCallback.onNewScore(new Player(id, character, score));
 
-                                }catch (Exception e){
-                                    e.printStackTrace();
+                                } catch (Exception e) {
+//                                    e.printStackTrace();
                                 }
                             }
                         }
