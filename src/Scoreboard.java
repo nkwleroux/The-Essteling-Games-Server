@@ -13,7 +13,12 @@ public class Scoreboard implements ScoreBoardCallback {
 
     public void updateScoreBoard(Player player) {
         if (this.highscores.contains(player)) {
-            this.highscores.remove(player);
+            Player oldPlayer = this.highscores.get(this.highscores.indexOf(player));
+            if (player.getScore() > oldPlayer.getScore()) {
+                this.highscores.remove(player);
+            }else {
+                return;
+            }
         }
         this.highscores.add(player);
         Collections.sort(this.highscores);
