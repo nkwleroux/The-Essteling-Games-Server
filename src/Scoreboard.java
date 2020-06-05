@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -12,13 +13,10 @@ public class Scoreboard implements ScoreBoardCallback{
     }
 
     public void updateScoreBoard(Player player) {
-        for (Player k : highscores) {
-            if (player.getScore() > k.getScore()) {
-                int position = highscores.indexOf(k);
-                highscores.add(position, player);
-                highscores.remove(10);
-                return;
-            }
+        this.highscores.add(player);
+        Collections.sort(this.highscores);
+        for (int i = 10; i < this.highscores.size(); i++) {
+            this.highscores.remove(i);
         }
     }
 
