@@ -62,6 +62,7 @@ public class Server {
                                 client.close();
                                 System.exit(0);
                             } else if (message.equals("get Scoreboard")) {
+                                client.publish(publishTopic, messageToServer("Clear scoreboard"));
                                 for (int i = 0; i < scoreboard.getHighscores().size(); i++) {
 
                                     client.publish(publishTopic, messageToServer(scoreboard.getHighscore(i).toStringSimplified()));
