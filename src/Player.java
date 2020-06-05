@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Player implements Comparable<Player>{
 
@@ -34,13 +35,13 @@ public class Player implements Comparable<Player>{
         return getUsername() + "," + score;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Player player = (Player) o;
-//        return id == player.id &&
-//                name.equals(player.name);
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return id == player.id &&
+                name.equals(player.name);
+    }
 
 }

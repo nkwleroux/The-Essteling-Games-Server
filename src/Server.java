@@ -21,7 +21,6 @@ public class Server {
 
     private HashMap<String, Player> playerHashMap;
 
-    //    ScoreBoardCallback scoreBoardCallback;
     Scoreboard scoreboard;
 
     public static void main(String[] args) {
@@ -33,7 +32,6 @@ public class Server {
     public Server(Scoreboard scoreboard) {
         this.scoreboard = scoreboard;
         playerHashMap = new HashMap<>();
-//        this.scoreBoardCallback = scoreBoardCallback;
     }
 
     public void start() {
@@ -62,13 +60,11 @@ public class Server {
                                 client.close();
                                 System.exit(0);
                             } else if (message.equals("get Scoreboard")) {
+                                client.publish(publishTopic, messageToServer("Clear scoreboard"));
                                 for (int i = 0; i < scoreboard.getHighscores().size(); i++) {
 
                                     client.publish(publishTopic, messageToServer(scoreboard.getHighscore(i).toStringSimplified()));
                                 }
-//                                for (Player player : scoreboard.getHighscores()) {
-//                                }
-
                             } else {
                                 try {
                                     JSONParser jsonParser = new JSONParser();
@@ -148,31 +144,4 @@ public class Server {
         return message;
     }
 
-    //    private String content;
-    //    private ArrayList<String> testList;
-
-//    public MqttMessage arrayToServer(ArrayList<String> contentArray) {
-//        MqttMessage message = new MqttMessage();
-//        StringBuilder arrayMessage = new StringBuilder("{messages: ");
-//        for (String s : contentArray) {
-//            if (contentArray.indexOf(s) == 0) {
-//                arrayMessage.append("{ ").append(s).append(", ");
-//            } else if (contentArray.indexOf(s) == contentArray.size() - 1) {
-//                arrayMessage.append(s).append(" } }");
-//            } else arrayMessage.append(s).append(", ");
-//        }
-//        message.setPayload(arrayMessage.toString().getBytes());
-//        message.setQos(qos);
-//        return message;
-//    }
-
-    //    public ArrayList<String> testData(){
-//        ArrayList<String> testList = new ArrayList<>();
-//
-//        testList.add("Nic");
-//        testList.add("Hello world");
-//        testList.add("mike");
-//        testList.add("Quit");
-//        return testList;
-//    }
 }
