@@ -17,6 +17,10 @@ public class Player implements Comparable<Player>{
         return this.name + id;
     }
 
+    public int getId(){
+        return this.id;
+    }
+
     public int getScore() {
         return score;
     }
@@ -40,8 +44,8 @@ public class Player implements Comparable<Player>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return id == player.id &&
-                name.equals(player.name);
+        return id == player.id;
+//        return id == player.id && player.getUsername().equals(getUsername());
     }
 
 }

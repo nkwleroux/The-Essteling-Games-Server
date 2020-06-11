@@ -19,7 +19,7 @@ public class Server {
     private final int qos = 2;
     private final MemoryPersistence memoryPersistence = new MemoryPersistence();
 
-    private HashMap<String, Player> playerHashMap;
+    private HashMap<Integer, Player> playerHashMap;
 
     Scoreboard scoreboard;
 
@@ -72,19 +72,23 @@ public class Server {
                                     int id = (int) (long) jsonObject.get("id");
                                     String character = (String) jsonObject.get("character");
                                     int score = (int) (long) jsonObject.get("score");
-                                    String objectUsername = character + id;
+//                                    String objectUsername = character + id;
 
                                     System.out.println("received new player id:" + id + " name:" + character + " score:" + score);
 
                                     Player newPlayer = new Player(id, character, score);
-                                    if (!playerHashMap.containsKey(objectUsername) || playerHashMap.get(objectUsername).getScore() <= newPlayer.getScore()) {
+                                    if (!playerHashMap.containsKey(id) || playerHashMap.get(id).getScore() <= newPlayer.getScore()) {
+//                                        if (!playerHashMap.containsKey(objectUsername) || playerHashMap.get(objectUsername).getScore() <= newPlayer.getScore()) {
                                         scoreboard.onNewScore(newPlayer);
 
-                                        playerHashMap.put(newPlayer.getUsername(), newPlayer);
+                                        playerHashMap.put(newPlayer.getId(), newPlayer);
+//                                            playerHashMap.put(newPlayer.getUsername(), newPlayer);
 
                                     } else {
                                         for (Player player : scoreboard.getHighscores()) {
-                                            if (player.equals(playerHashMap.get(objectUsername))) {
+                                            if (player.equals(playerHashMap.get(id))) {
+//                                                if (player.equals(playerHashMap.get(objectUsername))) {
+
                                                 scoreboard.updateScoreBoard(newPlayer);
                                             }
                                         }
