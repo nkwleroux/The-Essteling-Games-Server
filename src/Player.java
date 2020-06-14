@@ -1,11 +1,8 @@
-import java.util.HashMap;
-import java.util.Objects;
+public class Player implements Comparable<Player> {
 
-public class Player implements Comparable<Player>{
-
-    private int id;
-    private String name;
-    private int score;
+    private final int id;
+    private final String name;
+    private final int score;
 
     public Player(int id, String name, int score) {
         this.id = id;
@@ -13,11 +10,11 @@ public class Player implements Comparable<Player>{
         this.score = score;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return this.name + id;
     }
 
-    public int getId(){
+    public int getId() {
         return this.id;
     }
 
@@ -35,7 +32,7 @@ public class Player implements Comparable<Player>{
         return "Username: " + getUsername() + ", score: " + score;
     }
 
-    public String toStringSimplified(){
+    public String toStringSimplified() {
         return getUsername() + "," + score;
     }
 

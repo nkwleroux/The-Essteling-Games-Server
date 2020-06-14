@@ -1,9 +1,8 @@
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
-public class Scoreboard  {
+public class Scoreboard {
 
     private final List<Player> highscores;
 
@@ -16,7 +15,7 @@ public class Scoreboard  {
             Player oldPlayer = this.highscores.get(this.highscores.indexOf(player));
             if (player.getScore() > oldPlayer.getScore()) {
                 this.highscores.remove(player);
-            }else {
+            } else {
                 return;
             }
         }
@@ -41,6 +40,6 @@ public class Scoreboard  {
 
     public void onNewScore(Player player) {
         updateScoreBoard(player);
-        Collections.sort(highscores,Collections.reverseOrder());
+        Collections.sort(highscores, Collections.reverseOrder());
     }
 }
