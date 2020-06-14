@@ -19,9 +19,9 @@ public class Server {
     private final int qos = 2;
     private final MemoryPersistence memoryPersistence = new MemoryPersistence();
 
-    private HashMap<Integer, Player> playerHashMap;
+    private final HashMap<Integer, Player> playerHashMap;
 
-    Scoreboard scoreboard;
+    private final Scoreboard scoreboard;
 
     public static void main(String[] args) {
         Scoreboard scoreboard = new Scoreboard();
@@ -65,6 +65,7 @@ public class Server {
 
                                     client.publish(publishTopic, messageToServer(scoreboard.getHighscore(i).toStringSimplified()));
                                 }
+                                client.publish(publishTopic,messageToServer("Close listener"));
                             } else {
                                 try {
                                     JSONParser jsonParser = new JSONParser();
