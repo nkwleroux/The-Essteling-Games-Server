@@ -121,6 +121,7 @@ public class Server {
 
     /**
      * Method to check if the user can and is connected to the MQTT server. Sets the options of the connection.
+     *
      * @param client The client which the options will be assigned to and used to connect to the MQTT server.
      * @return True if the client is connected with the server.
      */
@@ -143,6 +144,7 @@ public class Server {
 
     /**
      * Method which is used to send messages to the servers.
+     *
      * @param content The message which is to be sent to the MQTT server.
      * @return A MQTT message object with the content.
      */

@@ -13,6 +13,7 @@ public class Scoreboard {
     /**
      * Method to update the scoreboard. Adds players to highscores list if the player score is larger than a player
      * on the list.
+     *
      * @param player The player object that will be added to the list.
      */
     public void updateScoreBoard(Player player) {
@@ -33,6 +34,7 @@ public class Scoreboard {
 
     /**
      * Getter for the HighScore list.
+     *
      * @return A list with a size of 10 players.
      */
     public List<Player> getHighScores() {
@@ -41,6 +43,7 @@ public class Scoreboard {
 
     /**
      * Getter for an individual player from the HighScore list.
+     *
      * @param position The position of the player in the list.
      * @return The player which is in the position which was searched for.
      */
@@ -50,6 +53,7 @@ public class Scoreboard {
 
     /**
      * Method that adds new player by calling updateScoreBoard. Then sorts it on basis from high to low score.
+     *
      * @param player The player object to be added to the HighScore list.
      */
     public void onNewScore(Player player) {

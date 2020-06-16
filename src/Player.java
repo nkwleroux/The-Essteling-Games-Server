@@ -12,6 +12,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * Getter for the username which includes the name and id.
+     *
      * @return The name + id.
      */
     public String getUsername() {
@@ -20,6 +21,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * Getter for the player ID.
+     *
      * @return The variable id.
      */
     public int getId() {
@@ -28,6 +30,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * Getter for the player score.
+     *
      * @return The variable score.
      */
     public int getScore() {
@@ -36,6 +39,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * Comparator to check if the score is bigger, smaller or equal to the player score.
+     *
      * @param o Player object which will be used to compare the scores with.
      * @return An int between -1 and 1.
      */
@@ -46,6 +50,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * ToString method which is overwritten with the username and score.
+     *
      * @return A string with the username and score.
      */
     @Override
@@ -55,6 +60,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * ToString method used to send messages to the server.
+     *
      * @return A string with the username and score.
      */
     public String toStringSimplified() {
@@ -63,6 +69,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * Equals method to check if the player id equals the object player id.
+     *
      * @param o Object which will be used to compare to the player id.
      * @return True if player id = object id.
      */
