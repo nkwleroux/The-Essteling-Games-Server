@@ -34,6 +34,9 @@ public class Server {
         playerHashMap = new HashMap<>();
     }
 
+    /**
+     * Method which is used to start the server. Listens and sends messages to and from the MQTT server topics.
+     */
     public void start() {
 
         //sends message to server and sets
@@ -42,65 +45,62 @@ public class Server {
 
             if (!client.isConnected()) {
                 if (connectWithOptions(client)) {
-                    //used to subscribe to the MQTT server.
+                    //Used to subscribe to the MQTT server.
                     //Method message arrived is the message that arrives at the server.
                     client.setCallback(new MqttCallback() {
                         @Override
                         public void connectionLost(Throwable throwable) {
+                            //Prints message in console if connection is lost.
                             System.out.println("Server connection lost");
                         }
 
                         @Override
                         public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+                            //Reads messages from mqtt server subscribed topic.
                             System.out.println("Message from server: " + mqttMessage);
                             String message = mqttMessage.toString();
                             if (message.equals("close server")) {
-                                System.out.println("received message to close server");
+                                System.out.println("Received message to close server");
                                 client.disconnect();
                                 client.close();
                                 System.exit(0);
                             } else if (message.equals("get Scoreboard")) {
+                                System.out.println("Received message to retrieve Scoreboard");
                                 client.publish(publishTopic, messageToServer("Clear scoreboard"));
-                                for (int i = 0; i < scoreboard.getHighscores().size(); i++) {
-                                    client.publish(publishTopic, messageToServer(scoreboard.getHighscore(i).toStringSimplified()));
+                                for (int i = 0; i < scoreboard.getHighScores().size(); i++) {
+                                    client.publish(publishTopic, messageToServer(scoreboard.getHighScore(i).toStringSimplified()));
                                 }
-                                client.publish(publishTopic,messageToServer("Close listener"));
+                                client.publish(publishTopic, messageToServer("Close listener"));
                             } else {
+                                //Gets player from app.
                                 try {
                                     JSONParser jsonParser = new JSONParser();
                                     JSONObject jsonObject = (JSONObject) jsonParser.parse(new StringReader(mqttMessage.toString()));
                                     int id = (int) (long) jsonObject.get("id");
                                     String character = (String) jsonObject.get("character");
                                     int score = (int) (long) jsonObject.get("score");
-//                                    String objectUsername = character + id;
 
                                     System.out.println("received new player id:" + id + " name:" + character + " score:" + score);
 
                                     Player newPlayer = new Player(id, character, score);
                                     if (!playerHashMap.containsKey(id) || playerHashMap.get(id).getScore() <= newPlayer.getScore()) {
-//                                        if (!playerHashMap.containsKey(objectUsername) || playerHashMap.get(objectUsername).getScore() <= newPlayer.getScore()) {
                                         scoreboard.onNewScore(newPlayer);
-
                                         playerHashMap.put(newPlayer.getId(), newPlayer);
-//                                            playerHashMap.put(newPlayer.getUsername(), newPlayer);
-
                                     } else {
-                                        for (Player player : scoreboard.getHighscores()) {
+                                        for (Player player : scoreboard.getHighScores()) {
                                             if (player.equals(playerHashMap.get(id))) {
-//                                                if (player.equals(playerHashMap.get(objectUsername))) {
-
                                                 scoreboard.updateScoreBoard(newPlayer);
                                             }
                                         }
                                     }
-                                    System.out.println(scoreboard.getHighscores());
+                                    System.out.println(scoreboard.getHighScores());
                                     System.out.println(playerHashMap);
 
                                 } catch (ClassCastException e) {
                                     System.out.println("received improper json\n" + mqttMessage.toString());
                                     e.printStackTrace();
                                 } catch (Exception e) {
-//                                    e.printStackTrace();
+                                    e.printStackTrace();
                                 }
                             }
                         }
@@ -110,11 +110,6 @@ public class Server {
                         }
                     });
                     client.subscribe(topic);
-
-                    //sends a single string to the server.
-//                    MqttMessage message = messageToServer(content);
-                    //Sends an array of strings to the MQTT server
-//                    MqttMessage message = arrayToServer(testList);
                     client.publish(topic, messageToServer("Server connected"));
                 }
             }
@@ -124,6 +119,11 @@ public class Server {
         }
     }
 
+    /**
+     * Method to check if the user can and is connected to the MQTT server. Sets the options of the connection.
+     * @param client The client which the options will be assigned to and used to connect to the MQTT server.
+     * @return True if the client is connected with the server.
+     */
     public boolean connectWithOptions(MqttClient client) {
         try {
             MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -141,6 +141,11 @@ public class Server {
         }
     }
 
+    /**
+     * Method which is used to send messages to the servers.
+     * @param content The message which is to be sent to the MQTT server.
+     * @return A MQTT message object with the content.
+     */
     public MqttMessage messageToServer(String content) {
         MqttMessage message = new MqttMessage();
         message.setPayload(content.getBytes());
